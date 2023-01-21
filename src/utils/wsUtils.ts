@@ -11,10 +11,6 @@ const publishMsg = (ws, msg, topic, listeners) => {
     timestamp: DateTime.now(),
   };
 
-  listeners[topic].forEach((listener) => {
-    listener.send(JSON.stringify(publishPayload));
-  });
-
   const responsePayload: wsMsg = {
     id: uuidv4(),
     msg: `Successfully published message to ${topic}`,
@@ -22,7 +18,19 @@ const publishMsg = (ws, msg, topic, listeners) => {
     topic,
     timestamp: DateTime.now(),
   };
-  ws.send(JSON.stringify(responsePayload));
+
+  if (Array.isArray(listeners[topic]) && listeners[topic].length > 0) {
+    listeners[topic].forEach((listener) => {
+      listener.send(JSON.stringify(publishPayload));
+    });
+
+    ws.send(JSON.stringify(responsePayload));
+  } else {
+    responsePayload.msg =
+      'Error trying to send msg. The topic you are sending a msg to must have active listeners';
+
+    ws.send(JSON.stringify(responsePayload));
+  }
 };
 
 const subscribeToTopic = (ws, topic) => {

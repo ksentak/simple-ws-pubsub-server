@@ -38,9 +38,9 @@ wss.on('connection', (ws) => {
         subscribeToTopic(ws, topic);
         break;
       case 'unsubscribe':
-        listeners[topic].filter((connection) => connection !== ws);
-
-        console.log(listeners);
+        listeners[topic] = listeners[topic].filter(
+          (websocket) => websocket != ws,
+        );
         unsubscribeFromTopic(ws, topic);
         break;
       default:
