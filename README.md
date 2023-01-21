@@ -19,7 +19,7 @@
 {
   "id": "456",
   "msgType": "subscribe",
-  "topic": "test"
+  "topic": "testTopic"
 }
 ```
 
