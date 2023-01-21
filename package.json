@@ -1,0 +1,22 @@
+{
+  "name": "wspubsub-ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ksentak/wspubsub-ts.git"
+  },
+  "author": "Keaton Sentak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ksentak/wspubsub-ts/issues"
+  },
+  "homepage": "https://github.com/ksentak/wspubsub-ts#readme",
+  "dependencies": {
+    "ws": "^8.12.0"
+  }
+}
