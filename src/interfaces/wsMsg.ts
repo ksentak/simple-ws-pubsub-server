@@ -3,4 +3,5 @@ export interface wsMsg {
   msgType: string;
   msg?: string;
   topic: string;
+  timestamp?: string;
 }

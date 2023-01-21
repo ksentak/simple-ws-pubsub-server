@@ -21,18 +21,18 @@ wss.on('connection', (ws) => {
   ws.on('message', (data: string) => {
     // Destructure data object
     const parsedData: wsMsg = JSON.parse(data);
-    const { id, msg, msgType, topic } = parsedData;
+    const { msg, msgType, topic } = parsedData;
 
     // Eventually I will extract these functions out
     switch (msgType) {
       case 'publish':
-        publishMsg(msg, topic);
+        publishMsg(ws, msg, topic);
         break;
       case 'subscribe':
-        subscribeToTopic(topic, listeners);
+        subscribeToTopic(ws, topic, listeners);
         break;
       case 'unsubscribe':
-        unsubscribeFromTopic(topic, listeners);
+        unsubscribeFromTopic(ws, topic, listeners);
         break;
       default:
         ws.send(
