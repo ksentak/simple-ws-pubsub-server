@@ -26,13 +26,19 @@ wss.on('connection', (ws) => {
     // Eventually I will extract these functions out
     switch (msgType) {
       case 'publish':
-        publishMsg(ws, msg, topic);
+        publishMsg(ws, msg, topic, listeners);
         break;
       case 'subscribe':
-        subscribeToTopic(ws, topic, listeners);
+        if (listeners[topic]) {
+          listeners[topic].push(ws);
+        } else {
+          listeners[topic] = [];
+          listeners[topic].push(ws);
+        }
+        subscribeToTopic(ws, topic);
         break;
       case 'unsubscribe':
-        unsubscribeFromTopic(ws, topic, listeners);
+        unsubscribeFromTopic(ws, topic);
         break;
       default:
         ws.send(
