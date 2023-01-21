@@ -3,14 +3,26 @@ import { DateTime } from 'luxon';
 import { wsMsg } from '../interfaces/wsMsg';
 
 const publishMsg = (ws, msg, topic, listeners) => {
-  const payload: wsMsg = {
+  const publishPayload: wsMsg = {
     id: uuidv4(),
     msg,
     msgType: 'publish',
     topic,
     timestamp: DateTime.now(),
   };
-  ws.send(JSON.stringify(payload));
+
+  listeners[topic].forEach((listener) => {
+    listener.send(JSON.stringify(publishPayload));
+  });
+
+  const responsePayload: wsMsg = {
+    id: uuidv4(),
+    msg: `Successfully published message to ${topic}`,
+    msgType: 'serverResponse',
+    topic,
+    timestamp: DateTime.now(),
+  };
+  ws.send(JSON.stringify(responsePayload));
 };
 
 const subscribeToTopic = (ws, topic) => {
@@ -21,6 +33,7 @@ const subscribeToTopic = (ws, topic) => {
     topic,
     timestamp: DateTime.now(),
   };
+
   ws.send(JSON.stringify(payload));
 };
 
@@ -32,6 +45,7 @@ const unsubscribeFromTopic = (ws, topic) => {
     topic,
     timestamp: DateTime.now(),
   };
+
   ws.send(JSON.stringify(payload));
 };
 
