@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from 'luxon';
-import { wsMsg } from '../interfaces/wsMsg';
+import { WsMsg } from '../interfaces/ws';
 
 const publishMsg = (ws, msg, topic, listeners) => {
-  const publishPayload: wsMsg = {
+  const publishPayload: WsMsg = {
     id: uuidv4(),
     msg,
     msgType: 'publish',
@@ -11,7 +11,7 @@ const publishMsg = (ws, msg, topic, listeners) => {
     timestamp: DateTime.now(),
   };
 
-  const responsePayload: wsMsg = {
+  const responsePayload: WsMsg = {
     id: uuidv4(),
     msg: `Successfully published message to ${topic}`,
     msgType: 'serverResponse',
