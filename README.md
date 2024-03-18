@@ -1,6 +1,6 @@
-# WS PubSub TypeScript
+# Simple WS PubSub Server
 
-A simple pub/sub server built with TypeScript. WS connections can `publish`, `subscribe`, or `unsubscribe` to different topics.
+A simple WebSocket PubSub server built with TypeScript. WS connections can `publish`, `subscribe`, or `unsubscribe` to different topics.
 
 ## Message Format
 
