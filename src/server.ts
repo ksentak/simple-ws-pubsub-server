@@ -3,7 +3,7 @@ import {
   publishMsg,
   subscribeToTopic,
   unsubscribeFromTopic,
-} from './utils/wsUtils';
+} from './utils/wsHandlers';
 import { WsMsg, Socket } from './interfaces/ws';
 import { WS_PORT, PING_INTERVAL } from './config';
 
