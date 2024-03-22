@@ -8,7 +8,7 @@ const publishMsg = (ws, msg, topic, listeners) => {
     msg,
     msgType: 'publish',
     topic,
-    timestamp: DateTime.now(),
+    timestamp: DateTime.now().toISO(),
   };
 
   const responsePayload: WsMsg = {
@@ -16,11 +16,12 @@ const publishMsg = (ws, msg, topic, listeners) => {
     msg: `Successfully published message to ${topic}`,
     msgType: 'serverResponse',
     topic,
-    timestamp: DateTime.now(),
+    timestamp: DateTime.now().toISO(),
   };
 
-  if (Array.isArray(listeners[topic]) && listeners[topic].length > 0) {
-    listeners[topic].forEach((listener) => {
+  // Check is the topic exists and has listeners
+  if (listeners.has(topic) && listeners.get(topic).size > 0) {
+    listeners.get(topic).forEach((listener) => {
       listener.send(JSON.stringify(publishPayload));
     });
 
@@ -39,7 +40,7 @@ const subscribeToTopic = (ws, topic) => {
     msg: `Successfully subscribed to topic ${topic}`,
     msgType: 'serverResponse',
     topic,
-    timestamp: DateTime.now(),
+    timestamp: DateTime.now().toISO(),
   };
 
   ws.send(JSON.stringify(payload));
@@ -51,7 +52,7 @@ const unsubscribeFromTopic = (ws, topic) => {
     msg: `Successfully unsubscribed from topic ${topic}`,
     msgType: 'serverResponse',
     topic,
-    timestamp: DateTime.now(),
+    timestamp: DateTime.now().toISO(),
   };
 
   ws.send(JSON.stringify(payload));

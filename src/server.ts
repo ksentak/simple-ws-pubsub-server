@@ -7,7 +7,7 @@ import {
 import { WsMsg, Socket } from './interfaces/ws';
 import { WS_PORT, PING_INTERVAL } from './config';
 
-const listeners = {};
+const listeners = new Map();
 
 // Function to clean up stale connections
 const removeStaleConnections = () => {
@@ -23,7 +23,7 @@ const wss = new WebSocketServer({ port: WS_PORT });
 
 console.log(`WebSocket server is running on port ${WS_PORT}...`);
 
-// Setup a ping intertval to check for stale connections
+// Setup a ping interval to check for stale connections
 setInterval(removeStaleConnections, PING_INTERVAL);
 
 // What occurs on connection
@@ -39,7 +39,6 @@ wss.on('connection', (ws: Socket) => {
   // Handle incoming messages
   ws.on('message', (data: string) => {
     try {
-      // Attempt to parse incoming data
       const parsedData: WsMsg = JSON.parse(data);
       const { msg, msgType, topic } = parsedData;
 
@@ -49,19 +48,20 @@ wss.on('connection', (ws: Socket) => {
           publishMsg(ws, msg, topic, listeners);
           break;
         case 'subscribe':
-          if (Array.isArray(listeners[topic])) {
-            listeners[topic].push(ws);
-          } else {
-            listeners[topic] = [];
-            listeners[topic].push(ws);
+          if (!listeners.has(topic)) {
+            // Initialize with a new Set if topic doesn't exist
+            listeners.set(topic, new Set());
           }
+          // Add the socket to the Set
+          listeners.get(topic).add(ws);
           subscribeToTopic(ws, topic);
           break;
         case 'unsubscribe':
-          listeners[topic] = listeners[topic].filter(
-            (websocket) => websocket != ws,
-          );
-          unsubscribeFromTopic(ws, topic);
+          if (listeners.has(topic)) {
+            // Remove the socket from the Set
+            listeners.get(topic).delete(ws);
+            unsubscribeFromTopic(ws, topic);
+          }
           break;
         default:
           ws.send(
@@ -77,8 +77,13 @@ wss.on('connection', (ws: Socket) => {
   // What connection closure and clean up
   ws.on('close', () => {
     console.log('Client has disconnected...');
-    Object.keys(listeners).forEach((topic) => {
-      listeners[topic] = listeners[topic].filet((client) => client !== ws);
+    listeners.forEach((clients, topic) => {
+      // Remove the socket from each Set
+      clients.delete(ws);
+      // Remove the topic if no subscribers are left
+      if (clients.size === 0) {
+        listeners.delete(topic);
+      }
     });
   });
 });
