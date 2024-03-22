@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from 'luxon';
 import { WsMsg } from '../interfaces/wsTypes';
 
@@ -28,7 +27,6 @@ const safeSend = (ws, payload, errorCallback?) => {
  */
 const publishMsg = (ws, msg, topic, listeners) => {
   const publishPayload: WsMsg = {
-    id: uuidv4(),
     msg,
     msgType: 'publish',
     topic,
@@ -36,9 +34,8 @@ const publishMsg = (ws, msg, topic, listeners) => {
   };
 
   const responsePayload: WsMsg = {
-    id: uuidv4(),
     msg: `Successfully published message to ${topic}`,
-    msgType: 'serverResponse',
+    msgType: 'acknowledgment',
     topic,
     timestamp: DateTime.now().toISO(),
   };
@@ -53,6 +50,7 @@ const publishMsg = (ws, msg, topic, listeners) => {
   } else {
     responsePayload.msg =
       'Error trying to send msg. The topic you are sending a msg to must have active listeners';
+    responsePayload.msgType = 'error';
 
     safeSend(ws, responsePayload);
   }
@@ -65,9 +63,8 @@ const publishMsg = (ws, msg, topic, listeners) => {
  */
 const subscribeToTopic = (ws, topic) => {
   const payload = {
-    id: uuidv4(),
     msg: `Successfully subscribed to topic ${topic}`,
-    msgType: 'serverResponse',
+    msgType: 'acknowledgment',
     topic,
     timestamp: DateTime.now().toISO(),
   };
@@ -82,9 +79,8 @@ const subscribeToTopic = (ws, topic) => {
  */
 const unsubscribeFromTopic = (ws, topic) => {
   const payload = {
-    id: uuidv4(),
     msg: `Successfully unsubscribed from topic ${topic}`,
-    msgType: 'serverResponse',
+    msgType: 'acknowledgment',
     topic,
     timestamp: DateTime.now().toISO(),
   };

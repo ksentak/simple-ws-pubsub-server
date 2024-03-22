@@ -6,7 +6,6 @@ A simple WebSocket PubSub server built with TypeScript. WS connections can `publ
 
 ```
 {
-  id: string;
   msgType: publish | subscribe | unsubscribe;
   msg: string;
   topic: string;
@@ -19,10 +18,9 @@ A simple WebSocket PubSub server built with TypeScript. WS connections can `publ
 
 ```
 {
-  "id": "123",
   "msgType": "publish",
   "msg": "hey there",
-  "topic": "random topic"
+  "topic": "topic_001"
 }
 ```
 
@@ -30,9 +28,8 @@ A simple WebSocket PubSub server built with TypeScript. WS connections can `publ
 
 ```
 {
-  "id": "456",
   "msgType": "subscribe",
-  "topic": "random topic"
+  "topic": "topic_001"
 }
 ```
 
@@ -40,8 +37,7 @@ A simple WebSocket PubSub server built with TypeScript. WS connections can `publ
 
 ```
 {
-  "id": "789",
   "msgType": "unsubscribe",
-  "topic": "random topic"
+  "topic": "topic_001"
 }
 ```

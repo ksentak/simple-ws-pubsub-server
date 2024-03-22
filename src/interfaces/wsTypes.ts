@@ -1,8 +1,7 @@
 import { WebSocket } from 'ws';
 
 export interface WsMsg {
-  id: string;
-  msgType: string;
+  msgType: 'publish' | 'subscribe' | 'unsubscribe' | 'acknowledgment' | 'error';
   msg?: string;
   topic: string;
   timestamp?: string;

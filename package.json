@@ -22,7 +22,6 @@
   "homepage": "https://github.com/ksentak/simple-ws-pubsub-server#readme",
   "dependencies": {
     "luxon": "^3.4.4",
-    "uuid": "^9.0.0",
     "ws": "^8.16.0"
   },
   "devDependencies": {
