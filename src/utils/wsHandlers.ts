@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from 'luxon';
-import { WsMsg } from '../interfaces/ws';
+import { WsMsg } from '../interfaces/wsTypes';
 
 /**
  * Safely sends a WebSocket message, catching and logging any errors that occur.

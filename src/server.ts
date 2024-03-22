@@ -4,7 +4,7 @@ import {
   subscribeToTopic,
   unsubscribeFromTopic,
 } from './utils/wsHandlers';
-import { WsMsg, Socket } from './interfaces/ws';
+import { WsMsg, Socket } from './interfaces/wsTypes';
 import { WS_PORT, PING_INTERVAL } from './config';
 
 const listeners = new Map();
