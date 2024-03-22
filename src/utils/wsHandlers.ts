@@ -49,7 +49,7 @@ const publishMsg = (ws, msg, topic, listeners) => {
     safeSend(ws, responsePayload);
   } else {
     responsePayload.msg =
-      'Error trying to send msg. The topic you are sending a msg to must have active listeners';
+      'Error trying to send msg. The topic you are sending a msg to must have active listeners.';
     responsePayload.msgType = 'error';
 
     safeSend(ws, responsePayload);
@@ -88,4 +88,4 @@ const unsubscribeFromTopic = (ws, topic) => {
   safeSend(ws, payload);
 };
 
-export { publishMsg, subscribeToTopic, unsubscribeFromTopic };
+export { publishMsg, subscribeToTopic, unsubscribeFromTopic, safeSend };
