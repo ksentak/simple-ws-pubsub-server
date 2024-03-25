@@ -1,14 +1,19 @@
-import { createServer } from 'http';
-import WebSocket from 'ws';
-import { createWebSocketServer } from '../../server';
+import { Server, createServer } from 'http';
+import WebSocket, { WebSocketServer } from 'ws';
+import { createWebSocketServer } from '../../wss';
+
+interface TestServerResponse {
+  testServer: Server;
+  wss: WebSocketServer;
+}
 
 // Creates a test server
-const startTestServer = (port) => {
+const startTestServer = (port): Promise<TestServerResponse> => {
   const testServer = createServer();
-  createWebSocketServer(testServer);
+  const wss = createWebSocketServer(testServer);
 
   return new Promise((resolve) => {
-    testServer.listen(port, () => resolve(testServer));
+    testServer.listen(port, () => resolve({ testServer, wss }));
   });
 };
 
@@ -16,12 +21,11 @@ const waitForSocketState = (socket, state) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
       if (socket.readyState === state) {
-        console.log('It has resol;ved');
         resolve();
       } else {
         waitForSocketState(socket, state).then(resolve);
       }
-    }, 100);
+    }, 10);
   });
 };
 
@@ -37,7 +41,6 @@ const createWsClient = async (
     messages.push(data);
 
     if (messages.length === closeAfter) {
-      console.log('COOKIE');
       client.close();
     }
   });
