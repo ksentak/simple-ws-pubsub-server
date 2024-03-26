@@ -17,10 +17,14 @@ describe('WebSocket Server', () => {
     wss = response.wss;
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   afterAll(async () => {
     await new Promise((resolve) => wss.close(resolve));
     await new Promise((resolve) => server.close(resolve));
-    jest.clearAllMocks();
+    // jest.clearAllMocks();
   });
 
   it('should call publishMsg', async () => {
@@ -52,7 +56,6 @@ describe('WebSocket Server', () => {
     await waitForSocketState(client, client.CLOSED);
 
     expect(subscribeSpy).toHaveBeenCalled();
-    subscribeSpy.mockRestore();
   });
 
   it('should call unsubscribeFromTopic', async () => {
@@ -93,23 +96,26 @@ describe('WebSocket Server', () => {
     );
   });
 
-  // it('should clean up after client disconnects', async () => {
-  //   const [client] = await createWsClient(port, 1);
+  it('should handle errors when processing messages', async () => {
+    // Mock publishMsg to throw an error
+    jest.spyOn(wsHandlers, 'publishMsg').mockImplementation(() => {
+      throw new Error('Test Error');
+    });
 
-  //   // Subscribe to a topic
-  //   client.send(JSON.stringify({ msgType: 'subscribe', topic: 'topic_001' }));
+    const [client, messages] = await createWsClient(port, 1);
 
-  //   // Wait for the subscription to be processed
-  //   await new Promise((resolve) => setTimeout(resolve, 100));
+    const msg = {
+      msgType: 'publish',
+      msg: 'This should cause an error',
+      topic: 'topic_error',
+    };
 
-  //   // Disconnect the client
-  //   client.close();
+    client.send(JSON.stringify(msg));
 
-  //   await new Promise((resolve) => setTimeout(resolve, 100)); // Wait for cleanup
+    await waitForSocketState(client, client.CLOSED);
 
-  //   // Now, check if the server has cleaned up correctly
-  //   // This can be a bit tricky since you need to access the server's internal state
-  //   // One way to do this could be to expose some kind of debug route or function in your server code that lets you inspect the current state of topics and subscriptions
-  //   // Alternatively, you could spy/mock relevant functions to ensure they were called with the expected arguments
-  // });
+    // Check that the error message was sent to the client
+    const response = messages.toString();
+    expect(response).toEqual('Error processing your message.');
+  });
 });
